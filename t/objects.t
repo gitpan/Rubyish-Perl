@@ -1,0 +1,60 @@
+#!/usr/bin/env perl
+use strict;
+use lib 't/lib';
+use Test::More;
+
+use Rubyish::Class;
+use Rubyish::Object;
+use Rubyish::Module;
+use Cat;
+
+plan tests => 15;
+
+{
+    my $obj = Cat->new;
+
+    diag "The class of an object of Cat is " . $obj->class;
+    diag "The superclass of an object of Cat is " . $obj->superclass;
+
+    ok $obj->is_a("Cat") , "An object of Cat is a Cat";
+    ok $obj->is_a("Animal") , "An object of Cat is a Animal";
+    ok $obj->is_a("Rubyish::Object") , "An object of Cat is a Rubyish::Object";
+
+ TODO: {
+        local $TODO = "...";
+        ok !$obj->is_a("Rubyish::Module"), "An object of Cat is not a Rubyish::Module";
+        ok !$obj->is_a("Rubyish::Class"),  "An object of Cat is not a Rubyish::Class";
+    }
+}
+
+{
+    # Object is Class. Class is Object.
+    TODO : {
+        local $TODO = "...";
+        ok( Rubyish::Object->is_a( "Rubyish::Class" ) , "Object is a Class");
+    }
+
+    ok( Rubyish::Class->is_a( "Rubyish::Object" ) , "Class is a Object");
+}
+
+{
+    is(Rubyish::Object->class, "Rubyish::Class");
+    is(Rubyish::Module->class, "Rubyish::Class");
+    is(Rubyish::Class->class, "Rubyish::Class");
+
+    is(Rubyish::Object->superclass, undef);
+    is(Rubyish::Module->superclass, "Rubyish::Object");
+    is(Rubyish::Class->superclass, "Rubyish::Module");
+}
+
+{
+    my $pet = Cat->new;
+    $pet->__send__(name => "oreo");
+
+    is $pet->name, "oreo", "__send__ method works";
+
+    $pet->send(weight => "5kg");
+
+    is $pet->weight, "5kg", "send method also works";
+}
+
