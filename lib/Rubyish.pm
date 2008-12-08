@@ -1,18 +1,34 @@
 package Rubyish;
-our $VERSION = "0.10";
+our $VERSION = "0.20";
 
 use strict;
 use warnings;
+
+my @SPECIAL_WORD = qw(def);
 
 sub import {
     my ($class, @args) = @_;
     my $caller = caller;
     if($caller eq "main") {
-        eval qq{package $caller; use Rubyish::Syntax::def;};
+        eval qq{
+                package $caller;
+                use Rubyish::Kernel;
+               };
     }
     else {
-        eval qq{package $caller; use base 'Rubyish::Class'; use Rubyish::Attribute; use Rubyish::Syntax::def;};
+        eval qq{
+                package $caller; 
+                use base 'Rubyish::Object';
+                use Rubyish::Attribute;
+               };
     }
+    eval qq{
+            package $caller;
+            use Rubyish::Syntax::def;
+            use Rubyish::String;
+            use Rubyish::Array;
+            use Rubyish::Hash;
+           };
 };
 
 1;
@@ -27,6 +43,8 @@ Rubyish - Perl programming, the rubyish way.
     package Cat;
     use Rubyish;
 
+    attr_accessor "name", "color";
+
     def sound { "meow, meow" }
 
     def speak {
@@ -36,17 +54,25 @@ Rubyish - Perl programming, the rubyish way.
     ###
     package main;
 
-    my $pet = Cat->new;
-    $cat->speak;
+    my $pet = Cat->new->name("oreo");
+    $cat->speak; #=> "A cat goes meow, meow"
+    $cat->name;  #=> "oreo"
 
 =head1 DESCRIPTION
 
 So far it does not do many but just like synopsis depicted. You can
 use C<def> to define instance methods of your classes.
 
+All thing in Rubyish is object, and all methods should return object, but something is exceptive.
+Following is some methods return primitive datatype:
+
+Object#inspect #=> string, and all your #inspect should return string.
+
 =head1 AUTHOR
 
 Kang-min Liu  C<< <gugod@gugod.org> >>
+
+shelling C<shelling@cpan.org>
 
 =head1 LICENCE AND COPYRIGHT
 

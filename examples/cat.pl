@@ -1,16 +1,21 @@
 #!/usr/bin/env perl
 
-use lib 'lib';
+use lib qw(lib examples/lib);
 use Cat;
+use Rubyish;
 
-my $oreo = Cat->new;
+my $oreo = Cat->new->name("Oreo");
 
-$oreo->name("Oreo");
+puts $oreo->methods;
 
-$oreo->meow;
+print $oreo->sound . "\n";
 
 $oreo->play(qw(CHEESE BURGER));
 
 print '$oreo is a ' . ref($oreo) . "\n";
 
-print $oreo->to_yaml;
+print "Oreo to YAML:\n" . $oreo->to_yaml;
+
+puts $oreo->inspect;
+
+puts $oreo->ancestors;
