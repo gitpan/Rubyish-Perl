@@ -1,5 +1,5 @@
 package Rubyish;
-our $VERSION = "0.21";
+our $VERSION = "0.22";
 
 use strict;
 use warnings;
@@ -25,6 +25,7 @@ sub import {
     eval qq{
             package $caller;
             use Rubyish::Syntax::def;
+            use Rubyish::Syntax::nil;
             use Rubyish::String;
             use Rubyish::Array;
             use Rubyish::Hash;
